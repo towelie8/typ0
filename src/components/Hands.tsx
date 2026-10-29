@@ -6,14 +6,24 @@ import {
   DIGITS, arcPoint, bezier, digitForKey, digitTargets, fingerOf, handOf, handShift, homeTip, knuckle, targetTip,
   type Digit, type Hand, type Point,
 } from '../lib/hands'
+import { fingerShape, palmOutline, smoothClosedPath } from '../lib/handShape'
 
 /** Fingerdicke in Tasteneinheiten. */
-const WIDTH: Record<string, number> = { pinky: 0.4, ring: 0.44, middle: 0.46, index: 0.46, thumb: 0.5 }
+const WIDTH: Record<string, number> = { pinky: 0.38, ring: 0.43, middle: 0.46, index: 0.45, thumb: 0.52 }
+/** Gelenkfalten als Anteil der Länge; vom Daumen ist nur das Endglied sichtbar. */
+const JOINTS: Record<string, number[]> = { pinky: [0.4, 0.72], ring: [0.42, 0.72], middle: [0.42, 0.72], index: [0.42, 0.72], thumb: [0.7] }
 /** Dauer von Hin- und Rückweg in Sekunden. */
 const REACH = 0.14
 const RETURN = 0.18
-/** Vergrößerung der Kuppe auf halber Strecke: in der Draufsicht wirkt der Finger angehoben. */
-const LIFT = 0.3
+/** Verbreiterung des Fingers auf halber Strecke: in der Draufsicht wirkt er angehoben. */
+const LIFT = 0.12
+
+/** Hauttöne der Illustration. */
+const SKIN = '#f3d2b8'
+const SKIN_LINE = '#b47c5c'
+const CREASE = '#c58e70'
+const NAIL = '#fbebe3'
+const NAIL_LINE = '#d6a189'
 
 interface DigitShapeProps {
   digit: Digit
@@ -29,7 +39,8 @@ interface DigitShapeProps {
 function DigitShape({ digit, target, highlighted, reduce, shiftX, shiftY, unit }: DigitShapeProps) {
   const home = homeTip(digit)
   const base = knuckle(digit)
-  const width = WIDTH[digit.slice(2)] * unit
+  const kind = digit.slice(2)
+  const width = WIDTH[kind] * unit
   const finger = FINGERS[fingerOf(digit)]
 
   // Fortschritt auf der aktuellen Kurve; die Kurve selbst steht in `path`.
@@ -37,9 +48,15 @@ function DigitShape({ digit, target, highlighted, reduce, shiftX, shiftY, unit }
   const path = useRef({ from: home, control: home, to: home })
   const tipX = useTransform(progress, (t) => bezier(path.current.from, path.current.control, path.current.to, t).x * unit)
   const tipY = useTransform(progress, (t) => bezier(path.current.from, path.current.control, path.current.to, t).y * unit)
-  const radius = useTransform(progress, (t) => (width / 2) * (1 + LIFT * Math.sin(Math.PI * t)))
   const knuckleX = useTransform(shiftX, (v) => (base.x + v) * unit)
   const knuckleY = useTransform(shiftY, (v) => (base.y + v) * unit)
+  const shape = useTransform([knuckleX, knuckleY, tipX, tipY, progress], ([kx, ky, tx, ty, t]: number[]) =>
+    fingerShape({ x: kx, y: ky }, { x: tx, y: ty }, width * (1 + LIFT * Math.sin(Math.PI * t)), JOINTS[kind]),
+  )
+  const body = useTransform(shape, (s) => s.body)
+  const nail = useTransform(shape, (s) => s.nail)
+  const creases = useTransform(shape, (s) => s.creases)
+  const shine = useTransform(shape, (s) => s.shine)
 
   useEffect(() => {
     const to = reduce ? home : targetTip(digit, target)
@@ -57,26 +74,22 @@ function DigitShape({ digit, target, highlighted, reduce, shiftX, shiftY, unit }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [digit, target, reduce, unit])
 
-  // Der aktive Finger hat die Farbe der gedrückten Taste; der weiße Rand hebt ihn davon ab.
-  const color = highlighted ? finger.stroke : finger.fill
-  const outline = highlighted ? '#fff' : finger.stroke
   return (
     <g data-digit={digit} data-highlight={highlighted || undefined}>
-      <motion.line x1={knuckleX} y1={knuckleY} x2={tipX} y2={tipY} stroke={outline} strokeWidth={width + 4} strokeLinecap="round" />
-      <motion.line x1={knuckleX} y1={knuckleY} x2={tipX} y2={tipY} stroke={color} strokeWidth={width} strokeLinecap="round" />
-      <motion.circle data-tip cx={tipX} cy={tipY} r={radius} fill={color} stroke={outline} strokeWidth={2} />
+      {/* Leuchtrand in der Zonenfarbe für den aktiven Finger. */}
+      {highlighted && <motion.path d={body} fill="none" stroke={finger.stroke} strokeWidth={9} strokeOpacity={0.45} strokeLinejoin="round" />}
+      <motion.path d={body} fill={SKIN} stroke={SKIN_LINE} strokeWidth={1.5} strokeLinejoin="round" />
+      {/* Tönung in der Zonenfarbe, die Haut bleibt darunter erkennbar. */}
+      {highlighted && (
+        <motion.path d={body} fill={finger.stroke} fillOpacity={0.5} stroke={finger.stroke} strokeWidth={2.5} strokeLinejoin="round" />
+      )}
+      <motion.path d={shine} stroke="#fff" strokeOpacity={0.45} strokeWidth={width * 0.22} strokeLinecap="round" />
+      <motion.path d={creases} fill="none" stroke={CREASE} strokeWidth={1.4} strokeLinecap="round" />
+      <motion.path d={nail} fill={NAIL} stroke={NAIL_LINE} strokeWidth={1.2} />
+      {/* Unsichtbare Fingerbeere: markiert die Stelle, die die Taste trifft (für Tests). */}
+      <motion.circle data-tip cx={tipX} cy={tipY} r={width / 2} fill="none" />
     </g>
   )
-}
-
-/** Handfläche als abgerundetes Rechteck unter den Knöcheln. */
-function palmRect(hand: Hand) {
-  const digits = DIGITS.filter((d) => handOf(d) === hand && !d.endsWith('thumb'))
-  const xs = digits.map((d) => knuckle(d).x)
-  const top = Math.min(...digits.map((d) => knuckle(d).y)) - 0.15
-  const left = Math.min(...xs) - 0.4
-  const right = Math.max(...xs) + 0.4
-  return { x: left, y: top, width: right - left, height: 1.9 }
 }
 
 interface HandShapeProps {
@@ -98,22 +111,18 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
     return () => controls.forEach((c) => c.stop())
   }, [shift.x, shift.y, shiftX, shiftY])
 
-  const palm = palmRect(hand)
+  const palm = smoothClosedPath(palmOutline(hand), unit)
   const palmX = useTransform(shiftX, (v) => v * unit)
   const palmY = useTransform(shiftY, (v) => v * unit)
+  const bumps = DIGITS.filter((d) => handOf(d) === hand && !d.endsWith('thumb')).map((d) => {
+    const k = knuckle(d)
+    const r = WIDTH[d.slice(2)] / 2
+    return `M${(k.x - r) * unit},${(k.y + 0.02) * unit} Q${k.x * unit},${(k.y - 0.14) * unit} ${(k.x + r) * unit},${(k.y + 0.02) * unit}`
+  })
 
+  // Finger zuerst, die Handfläche darüber verdeckt ihre Ansätze; die Gruppe ist als Ganzes transparent.
   return (
     <g data-hand={hand}>
-      <motion.rect
-        x={palm.x * unit}
-        y={palm.y * unit}
-        width={palm.width * unit}
-        height={palm.height * unit}
-        rx={0.6 * unit}
-        style={{ x: palmX, y: palmY }}
-        className="fill-white/60 stroke-slate-400"
-        strokeWidth={1.5}
-      />
       {DIGITS.filter((d) => handOf(d) === hand).map((d) => (
         <DigitShape
           key={d}
@@ -126,6 +135,10 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
           unit={unit}
         />
       ))}
+      <motion.g style={{ x: palmX, y: palmY }}>
+        <path d={palm} fill={SKIN} stroke={SKIN_LINE} strokeWidth={1.5} strokeLinejoin="round" />
+        <path d={bumps.join(' ')} fill="none" stroke={CREASE} strokeWidth={1.4} strokeLinecap="round" />
+      </motion.g>
     </g>
   )
 }
@@ -150,7 +163,7 @@ export function Hands({ pressed, activeCode, guide, unit }: HandsProps) {
   }))
 
   return (
-    <g className="pointer-events-none" opacity={0.85} aria-hidden>
+    <g className="pointer-events-none" opacity={0.9} aria-hidden>
       <HandShape hand="left" targets={targets} highlight={highlight} reduce={reduce} unit={unit} />
       <HandShape hand="right" targets={targets} highlight={highlight} reduce={reduce} unit={unit} />
     </g>

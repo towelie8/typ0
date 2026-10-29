@@ -76,7 +76,7 @@ const KNUCKLE: Record<string, { dx: number; dy: number }> = {
   ring: { dx: 0.12, dy: 1.65 },
   middle: { dx: 0, dy: 1.8 },
   index: { dx: -0.12, dy: 1.65 },
-  thumb: { dx: -0.85, dy: 0.95 },
+  thumb: { dx: -0.95, dy: 1.15 },
 }
 
 export function knuckle(digit: Digit): Point {
