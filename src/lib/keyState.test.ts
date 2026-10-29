@@ -55,4 +55,12 @@ describe('keyStateReducer', () => {
     s = keyStateReducer(s, { type: 'press', code: 'KeyK' })
     expect(s.shiftAdvice).toBeNull()
   })
+
+  it('zählt jeden neuen Anschlag, auch dieselbe Taste erneut', () => {
+    let s = keyStateReducer(INITIAL_KEY_STATE, { type: 'press', code: 'KeyF' })
+    s = keyStateReducer(s, { type: 'release', code: 'KeyF' })
+    s = keyStateReducer(s, { type: 'press', code: 'KeyF' })
+    expect(s.presses).toBe(2)
+    expect(keyStateReducer(s, { type: 'press', code: 'KeyF' }).presses).toBe(2)
+  })
 })

@@ -32,7 +32,7 @@ export default function App({ store = defaultStore }: { store?: ProgressStore })
   const onKey = useCallback((code: string, shift: boolean) => {
     setSession((s) => s && { ...s, trainer: trainerReducer(s.trainer, { type: 'key', code, shift, time: performance.now() }) })
   }, [])
-  const { pressed, active, shiftAdvice, press, release } = useKeyState(onKey)
+  const { pressed, active, shiftAdvice, presses, press, release } = useKeyState(onKey)
   const hasKeyboard = usePhysicalKeyboard()
 
   const start = (index: number) => {
@@ -83,7 +83,7 @@ export default function App({ store = defaultStore }: { store?: ProgressStore })
       ) : (
         <FingerHint code={active} shiftAdvice={shiftAdvice} />
       )}
-      <Keyboard pressed={pressed} activeCode={active} guide={guide} onPress={press} onRelease={release} />
+      <Keyboard pressed={pressed} activeCode={active} guide={guide} presses={presses} onPress={press} onRelease={release} />
       <FingerLegend />
     </main>
   )

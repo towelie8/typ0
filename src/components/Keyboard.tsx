@@ -1,14 +1,17 @@
+import { motion, useReducedMotion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { FINGERS } from '../data/fingers'
-import { HOME_KEYS, ISO_ENTER_INSET, KEYBOARD_WIDTH, KEYS, ROW_COUNT, type KeyDef } from '../data/layout'
+import { HOME_KEYS, ISO_ENTER_INSET, KEYBOARD_WIDTH, KEYS, ROW_COUNT, keyByCode, type KeyDef } from '../data/layout'
 import { isLetterKey, keyName } from '../lib/keyName'
-import { Hands } from './Hands'
 
 /** Pixel pro Tasteneinheit im SVG-Koordinatensystem. */
 const UNIT = 60
 const GAP = 4
 const RADIUS = 6
-/** Platz unter der Tastatur für die Handflächen, in Tasteneinheiten. */
-const PALM_SPACE = 2.4
+/** Kreis beim Anschlag: Start- und Endradius in Tasteneinheiten, Dauer in Sekunden. */
+const CIRCLE_FROM = 0.8
+const CIRCLE_TO = 0.12
+const CIRCLE_DURATION = 0.45
 /** Farbwechsel beim Drücken; bei reduzierter Bewegung sofort. */
 const TRANSITION = 'transition-[fill,stroke-width] duration-100 motion-reduce:transition-none'
 
@@ -114,22 +117,56 @@ function KeyCap({ keyDef, pressed, active, guided, onPress, onRelease }: KeyCapP
   )
 }
 
+/** Kreis in der Farbe der Fingerzone, der sich auf der Taste zusammenzieht und verblasst. */
+function PressCircle({ code, onDone }: { code: string; onDone: () => void }) {
+  const key = keyByCode(code)!
+  const color = FINGERS[key.finger].stroke
+  return (
+    <motion.circle
+      data-press-circle={code}
+      cx={(key.x + key.width / 2) * UNIT}
+      cy={(key.row + 0.5) * UNIT}
+      fill={color}
+      fillOpacity={0.25}
+      stroke={color}
+      strokeWidth={3}
+      className="pointer-events-none"
+      initial={{ r: CIRCLE_FROM * UNIT, opacity: 1 }}
+      animate={{ r: CIRCLE_TO * UNIT, opacity: 0 }}
+      transition={{ duration: CIRCLE_DURATION, ease: 'easeIn' }}
+      onAnimationComplete={onDone}
+    />
+  )
+}
+
 interface KeyboardProps {
   pressed: ReadonlySet<string>
   /** Zuletzt gedrückte Taste, wird umrandet. */
   activeCode: string | null
-  /** Tasten für das nächste Zeichen im Trainer; die Hände heben dann deren Finger hervor. */
+  /** Tasten für das nächste Zeichen im Trainer, gestrichelt umrandet. */
   guide?: string[]
+  /** Zähler der Anschläge; jeder neue Wert lässt auf `activeCode` einen Kreis erscheinen. */
+  presses: number
   onPress: (code: string) => void
   onRelease: (code: string) => void
 }
 
-/** Deutsche ISO-QWERTZ-Tastatur, Tasten nach Fingerzone eingefärbt, mit Händen darüber. */
-export function Keyboard({ pressed, activeCode, guide, onPress, onRelease }: KeyboardProps) {
+/** Deutsche ISO-QWERTZ-Tastatur, Tasten nach Fingerzone eingefärbt. */
+export function Keyboard({ pressed, activeCode, guide, presses, onPress, onRelease }: KeyboardProps) {
+  const reduce = useReducedMotion() ?? false
+  const [circles, setCircles] = useState<{ id: number; code: string }[]>([])
+  useEffect(() => {
+    // Bei reduzierter Bewegung genügt das Aufleuchten der Taste.
+    if (presses === 0 || activeCode === null || reduce) return
+    setCircles((all) => [...all, { id: presses, code: activeCode }])
+    // Nur neue Anschläge zählen, nicht ein Wechsel von activeCode allein.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presses])
+
   return (
     <svg
-      viewBox={`0 0 ${KEYBOARD_WIDTH * UNIT} ${(ROW_COUNT + PALM_SPACE) * UNIT}`}
-      className="h-auto w-full touch-none select-none"
+      viewBox={`0 0 ${KEYBOARD_WIDTH * UNIT} ${ROW_COUNT * UNIT}`}
+      className="h-auto w-full touch-none overflow-visible select-none"
       role="img"
       aria-label="Deutsche QWERTZ-Tastatur, Tasten nach Fingern eingefärbt"
     >
@@ -144,7 +181,9 @@ export function Keyboard({ pressed, activeCode, guide, onPress, onRelease }: Key
           onRelease={onRelease}
         />
       ))}
-      <Hands pressed={pressed} activeCode={activeCode} guide={guide} unit={UNIT} />
+      {circles.map((c) => (
+        <PressCircle key={c.id} code={c.code} onDone={() => setCircles((all) => all.filter((x) => x.id !== c.id))} />
+      ))}
     </svg>
   )
 }

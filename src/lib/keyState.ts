@@ -11,6 +11,8 @@ export interface KeyState {
    * Bleibt bis zur nächsten Zeichentaste stehen, damit der Hinweis lesbar ist.
    */
   shiftAdvice: 'ShiftLeft' | 'ShiftRight' | null
+  /** Anzahl der Anschläge; jeder neue Anschlag startet die Rückmeldung (Kreis) neu. */
+  presses: number
 }
 
 export type KeyAction =
@@ -18,7 +20,7 @@ export type KeyAction =
   | { type: 'release'; code: string }
   | { type: 'releaseAll' }
 
-export const INITIAL_KEY_STATE: KeyState = { pressed: new Set(), active: null, shiftAdvice: null }
+export const INITIAL_KEY_STATE: KeyState = { pressed: new Set(), active: null, shiftAdvice: null, presses: 0 }
 
 export function keyStateReducer(state: KeyState, action: KeyAction): KeyState {
   switch (action.type) {
@@ -29,6 +31,7 @@ export function keyStateReducer(state: KeyState, action: KeyAction): KeyState {
         pressed: new Set(state.pressed).add(action.code),
         active: action.code,
         shiftAdvice: nextShiftAdvice(state, action.code),
+        presses: state.presses + 1,
       }
     }
     case 'release': {

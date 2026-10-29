@@ -1,7 +1,7 @@
 import { FINGERS } from '../data/fingers'
 import type { Lesson } from '../data/lessons'
 import { keyByCode } from '../data/layout'
-import { fingerOf } from '../lib/hands'
+import { fingerOf } from '../lib/digits'
 import { keyName } from '../lib/keyName'
 import { accuracy, charsPerMinute, isPassed } from '../lib/stats'
 import { strokesForChar } from '../lib/strokes'

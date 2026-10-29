@@ -1,5 +1,5 @@
 import { keyByChar, keyByCode } from '../data/layout'
-import { digitForKey, handOf, type Digit } from './hands'
+import { digitForKey, handOf, type Digit } from './digits'
 
 /** Ein Tastendruck: welcher Finger welche Taste drückt. */
 export interface Stroke {

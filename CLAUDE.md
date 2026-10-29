@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Projektstand
 
 typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Stand: M1–M4 fertig (Tastatur mit Fingerzonen, Highlight, animierte Hände, Lernpfad mit Trainer), M5 (README, Endabnahme) offen.
+(Zielgruppe: absolute Anfänger). Stand: M1–M4 fertig (Tastatur mit Fingerzonen, Highlight mit Kreis-Animation, Lernpfad mit Trainer), M5 (README, Endabnahme) offen.
 
 ## Befehle
 
@@ -26,20 +26,17 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
   `code` ist die physische US-Position, daher liefert `KeyY` ein „z“. ISO-Enter reicht über zwei Reihen
   (`keysInRow` liefert beide Ausschnitte). Abfragen über `keyByCode`/`keyByChar`, Grundstellung in `HOME_KEYS`.
 - `src/data/fingers.ts`: Name und Farben je Finger. `src/components/Keyboard.tsx` zeichnet das SVG nur
-  aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home`, die Finger `data-digit`/`data-highlight`,
-  die Kuppe `data-tip` (von E2E-Tests genutzt).
+  aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home`/`data-guide`, Anschlag-Kreise
+  `data-press-circle` (von E2E-Tests genutzt).
 - Eingabe: `src/hooks/useKeyState.ts` hört window-weit auf keydown/keyup (über `code`, nicht `key`) und
   verwaltet den Zustand über den reinen Reducer `src/lib/keyState.ts` (`pressed` = gehalten,
   `active` = zuletzt gedrückt, bleibt für die Fingeranzeige stehen). Klicks auf die SVG-Tasten gehen
   über dieselben `press`/`release`-Funktionen. Strg/Meta-Kürzel werden nicht abgefangen, Tab bleibt frei.
-- Hände: `src/components/Hands.tsx` liegt als `<g>` im SVG der Tastatur (`pointer-events: none`).
-  Geometrie rein und getestet in `src/lib/hands.ts` (Tasteneinheiten): `Digit` teilt den Layout-`thumb`
-  in `l-thumb`/`r-thumb` (Leertaste = rechter Daumen). Ziel jedes Fingers ist die gehaltene Taste aus
-  `pressed` (`digitTargets`), sonst die Grundstellung; motion animiert einen Fortschrittswert über eine
-  Bézierkurve (`arcPoint`). Hervorgehoben wird der Finger von `active`. `useReducedMotion()` → keine Bewegung.
-  Darstellung (Wunsch User): Silhouette aus Handfläche (`src/lib/handShape.ts`) und Fingern als runde Linien,
-  Hautton mit dünnem Umriss über eine Maske, aktiver Finger in Zonenfarbe; greift ein Finger, winkeln sich die
-  übrigen derselben Hand an (`curledTip`).
+- Anschlag-Rückmeldung (Wunsch User, ersetzt die Hände): Jeder neue Anschlag (`presses` im Reducer) lässt auf der
+  Taste einen Kreis in der Zonenfarbe erscheinen, der sich zusammenzieht und verblasst (`PressCircle` in
+  `Keyboard.tsx`, `data-press-circle`). Bei `useReducedMotion()` kein Kreis. Welche Farbe zu welchem Finger
+  gehört, zeigt die Legende. `src/lib/digits.ts` teilt den Layout-`thumb` in `l-thumb`/`r-thumb`
+  (Leertaste = rechter Daumen) für Hinweistexte und Shift-Regel.
 - Shift-Regel: `strokesForChar` in `src/lib/strokes.ts` (Shift mit der Gegenhand); `shiftAdvice` im
   Reducer meldet Shift auf der falschen Seite.
 - Lernpfad: `src/data/lessons.json` (Reihenfolge = Freischaltreihenfolge, `newKeys` als Zeichen, Großbuchstaben
@@ -69,7 +66,7 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
 ## Vorgaben aus dem Project Prompt (Kurzfassung)
 
 - Umsetzungsreihenfolge: statische Tastatur + Fingerzonen → Interaktion (Taste/Klick) →
-  Hand-Animation → Lernpfad mit Lektionslogik.
+  Hand-Animation (später durch Kreis-Animation ersetzt) → Lernpfad mit Lektionslogik.
 - Lernpfad: Grundreihe+Leertaste → obere Reihe → untere Reihe → Shift/Satzzeichen →
   (optional) Zahlen/Sonderzeichen. Übungstexte nur aus bereits gelernten Tasten;
   Freischaltung der nächsten Lektion ab 95 % Genauigkeit.
@@ -82,7 +79,7 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
 ## Definition of Done
 
 `npm run build` fehlerfrei; im Browser geprüft: Tastatur + Fingerfarben korrekt,
-Highlight und Finger-Animation bei Tastendruck/Klick, Lektion 1 spielbar und schaltet bei
+Highlight und Kreis-Animation bei Tastendruck/Klick, Lektion 1 spielbar und schaltet bei
 ≥ 95 % die nächste frei, Fortschritt übersteht Reload, reduzierte Animationen bei
 `prefers-reduced-motion: reduce`.
 
