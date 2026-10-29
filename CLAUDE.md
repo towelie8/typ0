@@ -4,9 +4,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projektstand
 
-typ0 ist eine geplante Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Es gibt noch **keinen Code** — nur Anforderungen.
-Build-, Lint- und Test-Befehle hier nachtragen, sobald das Projekt aufgesetzt ist.
+typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
+(Zielgruppe: absolute Anfänger). Stand: M1 fertig (statische Tastatur mit Fingerzonen), M2–M5 offen.
+
+## Befehle
+
+```bash
+npm run dev                          # Dev-Server
+npm run build                        # Typecheck (tsc) + Produktions-Build nach dist/
+npm test                             # Vitest (Unit-Tests unter src/**/*.test.ts)
+npx vitest run src/data/layout.test.ts -t "Grundstellung"   # einzelner Test
+npm run test:e2e                     # Playwright; baut und startet selbst `vite preview` auf :4173
+```
+
+Playwright-Browser fehlen nach einem Update → `npx playwright install chromium`.
+
+## Architektur
+
+- `src/data/layout.ts` ist die **einzige Quelle** für das ISO-QWERTZ-Layout: Reihen als Tabellen
+  (`KeyboardEvent.code`, Zeichen, Shift-Zeichen, Finger, Breite), x-Positionen werden daraus berechnet.
+  `code` ist die physische US-Position, daher liefert `KeyY` ein „z“. ISO-Enter reicht über zwei Reihen
+  (`keysInRow` liefert beide Ausschnitte). Abfragen über `keyByCode`/`keyByChar`, Grundstellung in `HOME_KEYS`.
+- `src/data/fingers.ts`: Name und Farben je Finger. `src/components/Keyboard.tsx` zeichnet das SVG nur
+  aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home` (von E2E-Tests genutzt).
+- Stolperstein: `'ß'.toUpperCase()` ist „SS“. Buchstabentasten erkennt man daran, dass `shiftChar`
+  der Großbuchstabe von `char` ist (`isLetterKey`).
 
 ## Session-Ablauf (`mabe/`)
 
