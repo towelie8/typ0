@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { HOME_KEYS, keyByCode } from '../data/layout'
-import { DIGITS, arcPoint, digitForKey, digitTargets, handOf, handShift, homeTip, keyTip, knuckle, targetTip } from './hands'
+import { DIGITS, arcPoint, curledTip, handBusy, digitForKey, digitTargets, handOf, handShift, homeTip, keyTip, knuckle, targetTip } from './hands'
 
 const key = (code: string) => keyByCode(code)!
 
@@ -117,5 +117,24 @@ describe('handShift', () => {
     const s = handShift('left', { 'l-ring': 'Digit2' })
     expect(s.y).toBeLessThan(0)
     expect(handShift('right', { 'l-ring': 'Digit2' })).toEqual({ x: 0, y: 0 })
+  })
+})
+
+describe('angewinkelte Finger', () => {
+  it('ziehen die Kuppe Richtung Knöchel, bleiben aber vor ihm', () => {
+    const home = homeTip('l-ring')
+    const k = knuckle('l-ring')
+    const tip = curledTip('l-ring')
+    expect(tip.y).toBeGreaterThan(home.y)
+    expect(tip.y).toBeLessThan(k.y)
+  })
+
+  it('betreffen nur die Hand, deren Finger gerade eine Taste drückt', () => {
+    expect(handBusy('left', { 'l-index': 'KeyR' })).toBe(true)
+    expect(handBusy('right', { 'l-index': 'KeyR' })).toBe(false)
+  })
+
+  it('zählen den Daumen auf der Leertaste nicht als Griff', () => {
+    expect(handBusy('right', { 'r-thumb': 'Space' })).toBe(false)
   })
 })

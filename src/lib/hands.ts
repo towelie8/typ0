@@ -149,3 +149,18 @@ export function handShift(hand: Hand, targets: Partial<Record<Digit, string>>): 
   }
   return { x: 0, y: 0 }
 }
+
+/** Wie weit sich ein angewinkelter Finger Richtung Knöchel zurückzieht (Anteil der Fingerlänge). */
+const CURL = 0.28
+
+/** Kuppe eines leicht angewinkelten Fingers, der gerade nicht tippt. */
+export function curledTip(digit: Digit): Point {
+  const home = homeTip(digit)
+  const k = knuckle(digit)
+  return { x: home.x + (k.x - home.x) * CURL, y: home.y + (k.y - home.y) * CURL }
+}
+
+/** Greift ein Finger dieser Hand (außer dem Daumen) gerade nach einer Taste? */
+export function handBusy(hand: Hand, targets: Partial<Record<Digit, string>>): boolean {
+  return DIGITS.some((d) => handOf(d) === hand && !d.endsWith('thumb') && targets[d] !== undefined)
+}

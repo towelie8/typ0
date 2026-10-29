@@ -3,14 +3,14 @@ import { useEffect, useId, useRef } from 'react'
 import { FINGERS } from '../data/fingers'
 import { keyByCode } from '../data/layout'
 import {
-  arcPoint, bezier, digitForKey, digitTargets, fingerOf, handShift, homeTip, knuckle, targetTip,
+  arcPoint, bezier, curledTip, digitForKey, digitTargets, fingerOf, handBusy, handShift, homeTip, knuckle, targetTip,
   type Digit, type Hand, type Point,
 } from '../lib/hands'
 import { palmOutline, smoothClosedPath } from '../lib/handShape'
 
 /**
- * Hände als schlichtes Piktogramm: eine Silhouette mit dunklem Umriss, Finger als abgerundete
- * Streifen. Das Innere ist halbtransparent, damit die Tasten darunter lesbar bleiben.
+ * Hände als schlichte Zeichnung: eine hautfarbene Silhouette mit dünnem Umriss, Finger als
+ * abgerundete Streifen. Greift ein Finger, winkeln sich die übrigen Finger der Hand leicht an.
  */
 
 /** Fingerbreite in Tasteneinheiten. */
@@ -21,10 +21,11 @@ const ROOT_DEPTH = 0.35
 const REACH = 0.14
 const RETURN = 0.18
 /** Breite des Umrisses in Pixeln. */
-const OUTLINE = 4
-const OUTLINE_COLOR = '#1e293b'
-/** Deckkraft des Inneren (weiß, aktiver Finger in Zonenfarbe). */
-const FILL_OPACITY = 0.7
+const OUTLINE = 2
+const OUTLINE_COLOR = '#8a6248'
+const SKIN = '#f4e0c6'
+/** Deckkraft des Inneren; die Tasten unter den Fingern bleiben erkennbar. */
+const FILL_OPACITY = 0.9
 
 interface FingerMotion {
   digit: Digit
@@ -39,6 +40,8 @@ interface FingerMotion {
 function useFinger(
   digit: Digit,
   target: string | null,
+  /** Ein anderer Finger der Hand greift gerade; dieser winkelt sich an. */
+  curl: boolean,
   reduce: boolean,
   shiftX: MotionValue<number>,
   shiftY: MotionValue<number>,
@@ -64,7 +67,8 @@ function useFinger(
   const rootY = useTransform(shiftY, (v) => (root.y + v) * unit)
 
   useEffect(() => {
-    const to = reduce ? home : targetTip(digit, target)
+    let to = home
+    if (!reduce) to = target ? targetTip(digit, target) : curl ? curledTip(digit) : home
     // Start ist die aktuelle Position, damit eine unterbrochene Bewegung weich umlenkt.
     const from: Point = { x: tipX.get() / unit, y: tipY.get() / unit }
     path.current = { from, control: reduce ? to : arcPoint(from, to), to }
@@ -77,7 +81,7 @@ function useFinger(
     return () => controls.stop()
     // home ist je Finger konstant.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digit, target, reduce, unit])
+  }, [digit, target, curl, reduce, unit])
 
   return { digit, width: WIDTH[digit.slice(2)] * unit, tipX, tipY, rootX, rootY }
 }
@@ -141,7 +145,9 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
 
   const side = hand === 'left' ? 'l' : 'r'
   const digit = (kind: string) => `${side}-${kind}` as Digit
-  const finger = (kind: string) => useFinger(digit(kind), targets[digit(kind)] ?? null, reduce, shiftX, shiftY, unit)
+  const busy = handBusy(hand, targets)
+  const finger = (kind: string) =>
+    useFinger(digit(kind), targets[digit(kind)] ?? null, busy && kind !== 'thumb', reduce, shiftX, shiftY, unit)
   // Feste Reihenfolge und Anzahl, damit die Hooks bei jedem Rendern gleich aufgerufen werden.
   const fingers = [finger('pinky'), finger('ring'), finger('middle'), finger('index'), finger('thumb')]
 
@@ -165,7 +171,7 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
       <g opacity={FILL_OPACITY}>
         <Silhouette
           {...silhouette}
-          color="white"
+          color={SKIN}
           fingerColor={(d) => (highlight.has(d) ? FINGERS[fingerOf(d)].stroke : undefined)}
           grow={0}
         />

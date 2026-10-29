@@ -37,8 +37,9 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
   in `l-thumb`/`r-thumb` (Leertaste = rechter Daumen). Ziel jedes Fingers ist die gehaltene Taste aus
   `pressed` (`digitTargets`), sonst die Grundstellung; motion animiert einen Fortschrittswert über eine
   Bézierkurve (`arcPoint`). Hervorgehoben wird der Finger von `active`. `useReducedMotion()` → keine Bewegung.
-  Darstellung als Piktogramm (Wunsch User): Silhouette aus Handfläche (`src/lib/handShape.ts`) und Fingern als
-  runde Linien; dunkler Umriss über eine Maske, Inneres halbtransparent weiß, aktiver Finger in Zonenfarbe.
+  Darstellung (Wunsch User): Silhouette aus Handfläche (`src/lib/handShape.ts`) und Fingern als runde Linien,
+  Hautton mit dünnem Umriss über eine Maske, aktiver Finger in Zonenfarbe; greift ein Finger, winkeln sich die
+  übrigen derselben Hand an (`curledTip`).
 - Shift-Regel: `strokesForChar` in `src/lib/strokes.ts` (Shift mit der Gegenhand); `shiftAdvice` im
   Reducer meldet Shift auf der falschen Seite.
 - Lernpfad: `src/data/lessons.json` (Reihenfolge = Freischaltreihenfolge, `newKeys` als Zeichen, Großbuchstaben
