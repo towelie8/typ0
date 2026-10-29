@@ -22,5 +22,9 @@ Neues Todo → auch Issue anlegen; erledigt → hier abhaken und Issue schließe
 - [x] #3 M3: Hand-Animation mit motion/react inkl. reduced motion
 - [x] #4 M4: Lernpfad – Lektionsdaten, Textgenerator, Trainer, Freischaltung ≥ 95 %, ProgressStore
 - [x] #5 M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
-- [ ] #6 Später: Domain besorgen, Deployment auf VServer
+- [ ] #6 Domain besorgen, Deployment auf VServer
+  - [x] Domain typ0.dev gekauft
+  - [x] nginx-Konfiguration aktiv, App unter `/var/www/typ0.dev` hochgeladen (`deploy/deploy.sh`)
+  - [ ] Registrierung bei der .dev-Registry abwarten (RDAP noch 404), DNS-Einträge setzen
+  - [ ] Zertifikat per `certbot --nginx -d typ0.dev -d www.typ0.dev`, https://typ0.dev prüfen, Issue schließen
 - [ ] #7 Später: Konten/Server-Backend für Fortschritt (ProgressStore-Implementierung)
