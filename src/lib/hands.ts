@@ -68,15 +68,16 @@ export function homeTip(digit: Digit): Point {
 }
 
 /**
- * Knöchel relativ zur Kuppe in Grundstellung, für die linke Hand. `dx` zeigt zur Handmitte,
+ * Knöchel relativ zur Kuppe in Grundstellung, für die linke Hand. Bei leicht angewinkelten
+ * Fingern liegen die Knöchel vor der Tastatur (unterhalb der Leertastenreihe). `dx` zeigt zur Handmitte,
  * damit die Finger leicht gefächert sind; die rechte Hand ist gespiegelt.
  */
 const KNUCKLE: Record<string, { dx: number; dy: number }> = {
-  pinky: { dx: 0.3, dy: 1.35 },
-  ring: { dx: 0.12, dy: 1.65 },
-  middle: { dx: 0, dy: 1.8 },
-  index: { dx: -0.12, dy: 1.65 },
-  thumb: { dx: -0.95, dy: 1.15 },
+  pinky: { dx: 0.4, dy: 2.35 },
+  ring: { dx: 0.15, dy: 2.6 },
+  middle: { dx: -0.05, dy: 2.7 },
+  index: { dx: -0.2, dy: 2.55 },
+  thumb: { dx: -0.75, dy: 1.7 },
 }
 
 export function knuckle(digit: Digit): Point {

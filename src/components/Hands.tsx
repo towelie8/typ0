@@ -14,7 +14,7 @@ import { palmOutline, smoothClosedPath } from '../lib/handShape'
  */
 
 /** Fingerbreite in Tasteneinheiten. */
-const WIDTH: Record<string, number> = { pinky: 0.34, ring: 0.38, middle: 0.4, index: 0.4, thumb: 0.44 }
+const WIDTH: Record<string, number> = { pinky: 0.4, ring: 0.44, middle: 0.46, index: 0.46, thumb: 0.5 }
 /** Wie weit der Finger unter die Handfläche reicht, damit kein Spalt entsteht. */
 const ROOT_DEPTH = 0.35
 /** Dauer von Hin- und Rückweg in Sekunden. */
@@ -47,10 +47,12 @@ function useFinger(
   const home = homeTip(digit)
   const base = knuckle(digit)
   // Ansatz in Verlängerung des Fingers unter der Handfläche.
+  // Der Daumen liegt auf der Handfläche und beginnt am Knöchel.
+  const depth = digit.endsWith('thumb') ? 0 : ROOT_DEPTH
   const length = Math.hypot(base.x - home.x, base.y - home.y)
   const root = {
-    x: base.x + ((base.x - home.x) / length) * ROOT_DEPTH,
-    y: base.y + ((base.y - home.y) / length) * ROOT_DEPTH,
+    x: base.x + ((base.x - home.x) / length) * depth,
+    y: base.y + ((base.y - home.y) / length) * depth,
   }
 
   // Fortschritt auf der aktuellen Kurve; die Kurve selbst steht in `path`.
@@ -92,23 +94,28 @@ interface SilhouetteProps {
   grow: number
 }
 
-/** Handfläche und Finger in einer Farbe; die Handfläche liegt oben und verdeckt die Fingeransätze. */
+/**
+ * Handfläche und Finger in einer Farbe. Die Handfläche verdeckt die Ansätze der vier Finger;
+ * der Daumen liegt darüber, wie bei einer echten Hand.
+ */
 function Silhouette({ fingers, palm, palmX, palmY, color, fingerColor, grow }: SilhouetteProps) {
+  const line = (f: FingerMotion) => (
+    <motion.line
+      key={f.digit}
+      x1={f.rootX}
+      y1={f.rootY}
+      x2={f.tipX}
+      y2={f.tipY}
+      stroke={fingerColor?.(f.digit) ?? color}
+      strokeWidth={f.width + grow * 2}
+      strokeLinecap="round"
+    />
+  )
   return (
     <>
-      {fingers.map((f) => (
-        <motion.line
-          key={f.digit}
-          x1={f.rootX}
-          y1={f.rootY}
-          x2={f.tipX}
-          y2={f.tipY}
-          stroke={fingerColor?.(f.digit) ?? color}
-          strokeWidth={f.width + grow * 2}
-          strokeLinecap="round"
-        />
-      ))}
+      {fingers.filter((f) => !f.digit.endsWith('thumb')).map(line)}
       <motion.path d={palm} style={{ x: palmX, y: palmY }} fill={color} stroke={color} strokeWidth={grow * 2} strokeLinejoin="round" />
+      {fingers.filter((f) => f.digit.endsWith('thumb')).map(line)}
     </>
   )
 }

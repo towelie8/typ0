@@ -8,7 +8,7 @@ const UNIT = 60
 const GAP = 4
 const RADIUS = 6
 /** Platz unter der Tastatur für die Handflächen, in Tasteneinheiten. */
-const PALM_SPACE = 1
+const PALM_SPACE = 2.4
 /** Farbwechsel beim Drücken; bei reduzierter Bewegung sofort. */
 const TRANSITION = 'transition-[fill,stroke-width] duration-100 motion-reduce:transition-none'
 

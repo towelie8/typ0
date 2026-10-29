@@ -54,6 +54,10 @@ describe('Geometrie', () => {
     for (const d of DIGITS) expect(knuckle(d).y, d).toBeGreaterThan(homeTip(d).y)
   })
 
+  it('legt die Knöchel vor die Tastatur, wie bei angewinkelten Fingern in Grundstellung', () => {
+    for (const d of DIGITS) expect(knuckle(d).y, d).toBeGreaterThan(5)
+  })
+
   it('zielt in den unteren Teil der Taste, damit die Beschriftung sichtbar bleibt', () => {
     const tip = keyTip(key('KeyR'))
     const r = key('KeyR')

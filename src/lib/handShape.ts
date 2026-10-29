@@ -5,11 +5,11 @@ const f = (n: number) => Math.round(n * 100) / 100
 const pt = (p: Point) => `${f(p.x)},${f(p.y)}`
 
 /** Unterer Rand des Handgelenks; liegt unterhalb des sichtbaren Bereichs, die Hand läuft aus dem Bild. */
-const WRIST_Y = 7.5
+const WRIST_Y = 9.5
 
 /**
- * Stützpunkte des Handrückens in Tasteneinheiten: oben knapp über den Knöcheln, innen mit
- * Daumenansatz, unten breit auslaufend zum Handgelenk.
+ * Stützpunkte des Handrückens in Tasteneinheiten: oben knapp über den Knöcheln, Seiten fast
+ * senkrecht, innen der Daumenansatz, unten schmaler werdend zum Handgelenk.
  */
 export function palmOutline(hand: Hand): Point[] {
   const digits = DIGITS.filter((d) => handOf(d) === hand)
@@ -19,17 +19,17 @@ export function palmOutline(hand: Hand): Point[] {
   const inward = index.x > pinky.x ? 1 : -1
   const p = (x: number, y: number): Point => ({ x, y })
   return [
-    p(pinky.x - inward * 0.32, pinky.y + 0.25),
+    p(pinky.x - inward * 0.24, pinky.y + 0.15),
     p(pinky.x, pinky.y - 0.16),
     p(ring.x, ring.y - 0.18),
     p(middle.x, middle.y - 0.18),
     p(index.x, index.y - 0.16),
-    p(index.x + inward * 0.3, index.y + 0.2),
-    p(index.x + inward * 0.4, index.y + 0.85),
-    p(thumb.x + inward * 0.2, thumb.y + 0.55),
-    p(thumb.x - inward * 0.4, WRIST_Y),
-    p(pinky.x + inward * 0.7, WRIST_Y),
-    p(pinky.x - inward * 0.36, pinky.y + 1.2),
+    p(index.x + inward * 0.24, index.y + 0.15),
+    p(index.x + inward * 0.26, index.y + 0.7),
+    p(thumb.x + inward * 0.3, thumb.y + 0.3),
+    p(thumb.x + inward * 0.05, WRIST_Y),
+    p(pinky.x + inward * 0.35, WRIST_Y),
+    p(pinky.x - inward * 0.22, pinky.y + 1.3),
   ]
 }
 
