@@ -69,7 +69,18 @@ export default function App({ store = defaultStore }: { store?: ProgressStore })
       </header>
       {!hasKeyboard && <KeyboardNotice />}
       {/* Während der Übung ausgeblendet, damit Text und Tastatur auch auf kleinen Bildschirmen passen. */}
-      {progress && !running && <LessonPath lessons={LESSONS} progress={progress} current={session?.index ?? null} onSelect={start} />}
+      {progress && !running && (
+        <section aria-labelledby="path-title" className="flex flex-col gap-3">
+          <div data-testid="path-intro">
+            <h2 id="path-title" className="text-xl font-semibold">Lernpfad</h2>
+            <p className="text-slate-600">
+              Klicke auf eine Lektion und tippe den angezeigten Text ab. Ab 95 % Genauigkeit wird die nächste
+              Lektion freigeschaltet. Beginne mit Lektion 1.
+            </p>
+          </div>
+          <LessonPath lessons={LESSONS} progress={progress} current={session?.index ?? null} onSelect={start} />
+        </section>
+      )}
       {session ? (
         <Trainer
           key={session.run}

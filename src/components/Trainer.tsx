@@ -49,6 +49,32 @@ function NextHint({ char }: { char: string }) {
   )
 }
 
+/** Anleitung vor dem ersten Anschlag; verschwindet, sobald getippt wird. */
+function LessonIntro({ minAccuracy }: { minAccuracy: number }) {
+  return (
+    <div data-testid="lesson-intro" className="rounded-lg border border-sky-200 bg-sky-50 p-4">
+      <p className="font-semibold">So geht's</p>
+      <ol className="mt-1 list-decimal space-y-1 pl-5">
+        <li>
+          Lege die Finger in die Grundstellung: links auf <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>,
+          rechts auf <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd> <kbd>Ö</kbd>, den rechten Daumen auf die Leertaste.
+          F und J haben eine fühlbare Markierung.
+        </li>
+        <li>
+          Tippe den Text oben Zeichen für Zeichen ab. Die nächste Taste ist auf der Tastatur gestrichelt
+          umrandet, darunter steht, welcher Finger sie drückt. <kbd>␣</kbd> steht für die Leertaste.
+        </li>
+        <li>Nach jedem Anschlag kehrt der Finger in die Grundstellung zurück. Schau dabei möglichst auf den Bildschirm, nicht auf die Hände.</li>
+        <li>
+          Bei einem Fehler wird das Zeichen rot und es geht erst mit der richtigen Taste weiter. Ab {minAccuracy} %
+          Genauigkeit ist die Lektion bestanden und die nächste wird freigeschaltet.
+        </li>
+      </ol>
+      <p className="mt-2 text-sm text-slate-600">Die Übung startet mit deinem ersten Tastendruck, die Zeit läuft erst ab dann.</p>
+    </div>
+  )
+}
+
 /** Übungszeile mit Fehlermarkierung, Live-Statistik und Ergebnis am Ende. */
 export function Trainer({ lesson, state, hasNext, onRestart, onNext, onClose }: TrainerProps) {
   const done = state.finishedAt !== null
@@ -93,6 +119,8 @@ export function Trainer({ lesson, state, hasNext, onRestart, onNext, onClose }: 
           </span>
         ))}
       </p>
+
+      {state.startedAt === null && <LessonIntro minAccuracy={lesson.minAccuracy} />}
 
       {!done && (
         <>

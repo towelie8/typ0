@@ -22,6 +22,20 @@ test.describe('Lernpfad', () => {
     await waitForKeyListener(page)
   })
 
+  test('erklärt auf der Startseite, wie der Lernpfad funktioniert', async ({ page }) => {
+    await expect(page.getByTestId('path-intro')).toContainText('tippe den angezeigten Text ab')
+  })
+
+  test('zeigt beim Start der Lektion eine Anleitung, die beim Tippen verschwindet', async ({ page }) => {
+    await startLesson(page, 'grundstellung')
+    const intro = page.getByTestId('lesson-intro')
+    await expect(intro).toContainText('Grundstellung')
+    await expect(intro).toContainText('Tippe den Text')
+    const text = (await page.getByTestId('exercise').getAttribute('data-text'))!
+    await page.keyboard.press(codeForChar(text[0]))
+    await expect(intro).toHaveCount(0)
+  })
+
   test('zeigt die erste Lektion offen und die übrigen gesperrt', async ({ page }) => {
     await expect(lessonButton(page, 'grundstellung')).toBeEnabled()
     await expect(lessonButton(page, 'grundreihe')).toBeDisabled()
