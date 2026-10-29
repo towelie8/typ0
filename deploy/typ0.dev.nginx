@@ -1,0 +1,32 @@
+# nginx-Konfiguration für typ0.dev auf towelies-server.
+# Ablage: /etc/nginx/sites-available/typ0.dev, Link nach sites-enabled.
+# Den HTTPS-Teil (listen 443, Zertifikat, Umleitung von HTTP) ergänzt `certbot --nginx`.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name typ0.dev www.typ0.dev;
+
+    root /var/www/typ0.dev;
+    index index.html;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    # Dateinamen enthalten einen Hash und ändern sich bei jedem Build.
+    location /assets/ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        try_files $uri =404;
+    }
+
+    # index.html immer neu laden, damit ein neuer Build sofort ankommt.
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

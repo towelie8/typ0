@@ -84,6 +84,14 @@ npm run build
 rsync -av --delete dist/ user@server:/var/www/typ0/
 ```
 
+Für den eigenen Server liegen eine fertige nginx-Konfiguration ([`deploy/typ0.dev.nginx`](deploy/typ0.dev.nginx))
+und ein Skript bereit, das testet, baut und `dist/` per rsync hochlädt:
+
+```bash
+deploy/deploy.sh                                  # Standard: towelies-server:/var/www/typ0.dev
+DEPLOY_HOST=anderer-server deploy/deploy.sh       # anderer SSH-Host
+```
+
 ### Caddy
 
 Caddy holt das TLS-Zertifikat für die Domain selbst.
