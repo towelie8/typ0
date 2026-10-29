@@ -11,13 +11,16 @@ Vor jeder Session ist das @mabe/prompt/session_prompt.md zu lesen (verweist auf 
 
 ## TODOs
 
+Todos werden parallel als GitHub-Issues in towelie8/typ0 gepflegt (`gh issue list -R towelie8/typ0`).
+Neues Todo → auch Issue anlegen; erledigt → hier abhaken und Issue schließen (Commit mit `Closes #N`).
+
 - [x] /init mit Claude
 - [x] Claude soll mit User zusammen im Plan Modus ein Session Prompt erstellen, welches dann immer gelesen werden soll vor jeder Session nachdem TechStack und alle offenen Fragen aus dem project prompt geklärt sind.
-- [ ] Issues und Todos in GitHub pflegen (Repo-Remote unter towelie8 klären, Todos/Meilensteine M1–M5 als Issues anlegen)
-- [ ] M1: Projekt-Setup (Vite, TS, Tailwind v4, Vitest, Playwright) + statische QWERTZ-Tastatur mit Fingerzonen
-- [ ] M2: Interaktion – Highlight bei Tastendruck/Klick, Fingerangabe
-- [ ] M3: Hand-Animation mit motion/react inkl. reduced motion
-- [ ] M4: Lernpfad – Lektionsdaten, Textgenerator, Trainer, Freischaltung ≥ 95 %, ProgressStore
-- [ ] M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
-- [ ] Später: Domain besorgen, Deployment auf VServer
-- [ ] Später: Konten/Server-Backend für Fortschritt (ProgressStore-Implementierung)
+- [x] Issues und Todos in GitHub pflegen (Issues #1–#7 angelegt)
+- [ ] #1 M1: Projekt-Setup (Vite, TS, Tailwind v4, Vitest, Playwright) + statische QWERTZ-Tastatur mit Fingerzonen
+- [ ] #2 M2: Interaktion – Highlight bei Tastendruck/Klick, Fingerangabe
+- [ ] #3 M3: Hand-Animation mit motion/react inkl. reduced motion
+- [ ] #4 M4: Lernpfad – Lektionsdaten, Textgenerator, Trainer, Freischaltung ≥ 95 %, ProgressStore
+- [ ] #5 M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
+- [ ] #6 Später: Domain besorgen, Deployment auf VServer
+- [ ] #7 Später: Konten/Server-Backend für Fortschritt (ProgressStore-Implementierung)

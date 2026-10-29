@@ -69,5 +69,6 @@ Danach die Befehle (dev, build, test, e2e, Einzeltest) in `CLAUDE.md` nachtragen
 ## Session-Ende
 
 - Log unter `mabe/session/JJJJ-MM-TT.md`: was gemacht wurde, Entscheidungen, nächste Schritte.
-- Erledigte Todos in `mabe/starter.md` abhaken, neue eintragen.
+- Erledigte Todos in `mabe/starter.md` abhaken, neue eintragen. Die Todos sind parallel als GitHub-Issues in
+  `towelie8/typ0` angelegt: Neue Todos auch als Issue anlegen, erledigte per `Closes #N` im Commit schließen.
 - Commits als `towelie8`, ohne KI-Hinweis.
