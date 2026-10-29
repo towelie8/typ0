@@ -32,7 +32,9 @@ describe('Lektionsdaten', () => {
     expect(rowOf(0)).toEqual(new Set([2, 4]))
     expect(rowOf(2)).toEqual(new Set([1]))
     expect(rowOf(4)).toEqual(new Set([3]))
-    expect(LESSONS.findIndex((l) => l.newKeys.includes('A'))).toBeGreaterThan(5)
-    expect(LESSONS.at(-1)!.newKeys).toContain('1')
+    const shift = LESSONS.findIndex((l) => l.newKeys.includes('A'))
+    expect(shift).toBeGreaterThan(5)
+    // Zahlen kommen nach Shift; dahinter dürfen weitere Lektionen angehängt werden.
+    expect(LESSONS.findIndex((l) => l.newKeys.includes('1'))).toBeGreaterThan(shift)
   })
 })

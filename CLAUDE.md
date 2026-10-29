@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Projektstand
 
 typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Stand: M1–M4 fertig (Tastatur mit Fingerzonen, Highlight mit Kreis-Animation, Lernpfad mit Trainer), M5 (README, Endabnahme) offen.
+(Zielgruppe: absolute Anfänger). Stand: M1–M5 fertig (Tastatur mit Fingerzonen, Kreis-Animation, Lernpfad mit Trainer, README). Offen: Deployment
+(#6) und Konten/Backend (#7). Start, neue Lektionen und Deployment beschreibt `README.md`.
 
 ## Befehle
 

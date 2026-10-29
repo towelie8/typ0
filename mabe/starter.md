@@ -21,6 +21,6 @@ Neues Todo → auch Issue anlegen; erledigt → hier abhaken und Issue schließe
 - [x] #2 M2: Interaktion – Highlight bei Tastendruck/Klick, Fingerangabe
 - [x] #3 M3: Hand-Animation mit motion/react inkl. reduced motion
 - [x] #4 M4: Lernpfad – Lektionsdaten, Textgenerator, Trainer, Freischaltung ≥ 95 %, ProgressStore
-- [ ] #5 M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
+- [x] #5 M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
 - [ ] #6 Später: Domain besorgen, Deployment auf VServer
 - [ ] #7 Später: Konten/Server-Backend für Fortschritt (ProgressStore-Implementierung)
