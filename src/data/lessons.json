@@ -1,0 +1,65 @@
+[
+  {
+    "id": "grundstellung",
+    "title": "Grundstellung",
+    "description": "Die Finger liegen auf A, S, D, F und J, K, L, Ö, der rechte Daumen auf der Leertaste. Nach jedem Anschlag zurück in die Grundstellung.",
+    "newKeys": ["a", "s", "d", "f", "j", "k", "l", "ö", " "],
+    "minAccuracy": 95
+  },
+  {
+    "id": "grundreihe",
+    "title": "G, H und Ä",
+    "description": "Die Zeigefinger greifen zur Seite nach G und H, der rechte kleine Finger nach Ä.",
+    "newKeys": ["g", "h", "ä"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "oben-1",
+    "title": "E, I, R und U",
+    "description": "Die ersten Tasten der oberen Reihe: Mittelfinger nach E und I, Zeigefinger nach R und U.",
+    "newKeys": ["e", "i", "r", "u"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "oben-2",
+    "title": "Obere Reihe komplett",
+    "description": "Q, W, T, Z, O, P und Ü. Achtung: Das Z liegt auf der deutschen Tastatur neben dem T.",
+    "newKeys": ["q", "w", "t", "z", "o", "p", "ü"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "unten-1",
+    "title": "C, V, B, N und M",
+    "description": "Die Finger greifen nach unten; danach gleich wieder zurück auf die Grundreihe.",
+    "newKeys": ["c", "v", "b", "n", "m"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "unten-2",
+    "title": "Y, X, Komma, Punkt und Bindestrich",
+    "description": "Die untere Reihe komplett: Y und X links, Komma, Punkt und Bindestrich rechts.",
+    "newKeys": ["y", "x", ",", ".", "-"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "shift",
+    "title": "Großbuchstaben",
+    "description": "Shift drückt immer der kleine Finger der anderen Hand: für A das rechte Shift, für J das linke.",
+    "newKeys": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Ä", "Ö", "Ü"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "satzzeichen",
+    "title": "Doppelpunkt, Semikolon und Unterstrich",
+    "description": "Satzzeichen mit Shift: Doppelpunkt über dem Punkt, Semikolon über dem Komma, Unterstrich über dem Bindestrich.",
+    "newKeys": [":", ";", "_"],
+    "minAccuracy": 95
+  },
+  {
+    "id": "zahlen",
+    "title": "Zahlen und ß",
+    "description": "Optional: die Zahlenreihe. Jeder Finger greift schräg nach oben, die Hand rückt ein Stück mit.",
+    "newKeys": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "ß"],
+    "minAccuracy": 95
+  }
+]

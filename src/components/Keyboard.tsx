@@ -31,11 +31,13 @@ interface KeyCapProps {
   keyDef: KeyDef
   pressed: boolean
   active: boolean
+  /** Als Nächstes zu drückende Taste (im Trainer). */
+  guided: boolean
   onPress: (code: string) => void
   onRelease: (code: string) => void
 }
 
-function KeyCap({ keyDef, pressed, active, onPress, onRelease }: KeyCapProps) {
+function KeyCap({ keyDef, pressed, active, guided, onPress, onRelease }: KeyCapProps) {
   const finger = FINGERS[keyDef.finger]
   const x = keyDef.x * UNIT + GAP / 2
   const y = keyDef.row * UNIT + GAP / 2
@@ -73,6 +75,7 @@ function KeyCap({ keyDef, pressed, active, onPress, onRelease }: KeyCapProps) {
       data-home={homeCodes.has(keyDef.code) || undefined}
       data-pressed={pressed || undefined}
       data-active={active || undefined}
+      data-guide={guided || undefined}
       className="cursor-pointer"
       onPointerDown={(e) => {
         // Pointer festhalten, damit das Loslassen auch außerhalb der Taste ankommt.
@@ -88,6 +91,21 @@ function KeyCap({ keyDef, pressed, active, onPress, onRelease }: KeyCapProps) {
       ) : (
         <rect x={x} y={y} width={w} height={h} rx={RADIUS} fill={pressed ? finger.stroke : finger.fill} stroke={finger.stroke} strokeWidth={active ? 4 : 1.5} className={TRANSITION} />
       )}
+      {guided && (
+        // Gestrichelter Rahmen innerhalb der Taste; pulsiert nur ohne reduzierte Bewegung.
+        <rect
+          x={x + 3}
+          y={y + 3}
+          width={w - 6}
+          height={(keyDef.shape === 'iso-enter' ? 2 * UNIT : UNIT) - GAP - 6}
+          rx={RADIUS - 2}
+          fill="none"
+          stroke="#0f172a"
+          strokeWidth={2.5}
+          strokeDasharray="6 4"
+          className="animate-pulse motion-reduce:animate-none"
+        />
+      )}
       {text}
       {BUMP_CODES.has(keyDef.code) && (
         <line x1={x + w / 2 - 8} x2={x + w / 2 + 8} y1={y + h - 9} y2={y + h - 9} stroke={pressed ? '#fff' : '#0f172a'} strokeWidth={2} strokeLinecap="round" />
@@ -100,12 +118,14 @@ interface KeyboardProps {
   pressed: ReadonlySet<string>
   /** Zuletzt gedrückte Taste, wird umrandet. */
   activeCode: string | null
+  /** Tasten für das nächste Zeichen im Trainer; die Hände heben dann deren Finger hervor. */
+  guide?: string[]
   onPress: (code: string) => void
   onRelease: (code: string) => void
 }
 
 /** Deutsche ISO-QWERTZ-Tastatur, Tasten nach Fingerzone eingefärbt, mit Händen darüber. */
-export function Keyboard({ pressed, activeCode, onPress, onRelease }: KeyboardProps) {
+export function Keyboard({ pressed, activeCode, guide, onPress, onRelease }: KeyboardProps) {
   return (
     <svg
       viewBox={`0 0 ${KEYBOARD_WIDTH * UNIT} ${(ROW_COUNT + PALM_SPACE) * UNIT}`}
@@ -119,11 +139,12 @@ export function Keyboard({ pressed, activeCode, onPress, onRelease }: KeyboardPr
           keyDef={key}
           pressed={pressed.has(key.code)}
           active={key.code === activeCode}
+          guided={guide?.includes(key.code) ?? false}
           onPress={onPress}
           onRelease={onRelease}
         />
       ))}
-      <Hands pressed={pressed} activeCode={activeCode} unit={UNIT} />
+      <Hands pressed={pressed} activeCode={activeCode} guide={guide} unit={UNIT} />
     </svg>
   )
 }

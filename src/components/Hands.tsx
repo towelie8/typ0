@@ -82,7 +82,7 @@ function palmRect(hand: Hand) {
 interface HandShapeProps {
   hand: Hand
   targets: Partial<Record<Digit, string>>
-  highlight: Digit | null
+  highlight: ReadonlySet<Digit>
   reduce: boolean
   unit: number
 }
@@ -119,7 +119,7 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
           key={d}
           digit={d}
           target={targets[d] ?? null}
-          highlighted={d === highlight}
+          highlighted={highlight.has(d)}
           reduce={reduce}
           shiftX={shiftX}
           shiftY={shiftY}
@@ -133,16 +133,21 @@ function HandShape({ hand, targets, highlight, reduce, unit }: HandShapeProps) {
 interface HandsProps {
   pressed: ReadonlySet<string>
   activeCode: string | null
+  /** Tasten des nächsten Zeichens im Trainer; deren Finger werden statt des zuletzt benutzten hervorgehoben. */
+  guide?: string[]
   /** Pixel pro Tasteneinheit im SVG der Tastatur. */
   unit: number
 }
 
 /** Beide Hände als Ebene über der Tastatur; Klicks gehen an die Tasten darunter. */
-export function Hands({ pressed, activeCode, unit }: HandsProps) {
+export function Hands({ pressed, activeCode, guide, unit }: HandsProps) {
   const reduce = useReducedMotion() ?? false
   const targets = digitTargets(pressed)
-  const active = activeCode ? keyByCode(activeCode) : undefined
-  const highlight = active ? digitForKey(active) : null
+  const codes = guide ?? (activeCode ? [activeCode] : [])
+  const highlight = new Set(codes.flatMap((code) => {
+    const key = keyByCode(code)
+    return key ? [digitForKey(key)] : []
+  }))
 
   return (
     <g className="pointer-events-none" opacity={0.85} aria-hidden>

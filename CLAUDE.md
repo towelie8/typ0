@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Projektstand
 
 typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Stand: M1–M3 fertig (Tastatur mit Fingerzonen, Highlight bei Tastendruck/Klick, animierte Hände), M4–M5 offen.
+(Zielgruppe: absolute Anfänger). Stand: M1–M4 fertig (Tastatur mit Fingerzonen, Highlight, animierte Hände, Lernpfad mit Trainer), M5 (README, Endabnahme) offen.
 
 ## Befehle
 
@@ -39,6 +39,15 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
   Bézierkurve (`arcPoint`). Hervorgehoben wird der Finger von `active`. `useReducedMotion()` → keine Bewegung.
 - Shift-Regel: `strokesForChar` in `src/lib/strokes.ts` (Shift mit der Gegenhand); `shiftAdvice` im
   Reducer meldet Shift auf der falschen Seite.
+- Lernpfad: `src/data/lessons.json` (Reihenfolge = Freischaltreihenfolge, `newKeys` als Zeichen, Großbuchstaben
+  = mit Shift), Wortliste `src/data/words.ts`. `src/lib/textgen.ts` erzeugt Übungstexte nur aus gelernten
+  Zeichen (`allowedChars`), Wörter vor der Shift-Lektion klein (`fitWord`). Tests prüfen jede Lektion.
+- Trainer: reiner Reducer `src/lib/trainer.ts`, prüft `code` + Shift statt `key` (OS-Layout egal). Eingaben
+  kommen über den `onKey`-Callback von `useKeyState`. Ohne laufende Lektion ist die Seite die freie Tastatur
+  (M2/M3-Tests verlassen sich darauf).
+- Fortschritt nur über `ProgressStore` (`src/lib/progress/`), nie direkt `localStorage`; Schlüssel
+  `typ0.progress.v1`. Genauigkeit wird abgerundet (`stats.ts`).
+- E2E: `typeExercise`/`codeForChar` in `e2e/helpers.ts` tippen den Übungstext aus `data-text` ab.
 - Texte über Finger: `FINGERS[f].name` (Nominativ) bzw. `.dative` („mit dem rechten Zeigefinger“).
 - Stolperstein: `'ß'.toUpperCase()` ist „SS“. Buchstabentasten erkennt man daran, dass `shiftChar`
   der Großbuchstabe von `char` ist (`isLetterKey` in `src/lib/keyName.ts`).
