@@ -32,4 +32,27 @@ describe('keyStateReducer', () => {
     expect(s.pressed.size).toBe(0)
     expect(s.active).toBe('KeyA')
   })
+
+  it('rät zur Shift-Taste der Gegenhand, wenn Shift auf derselben Seite gehalten wird', () => {
+    let s = keyStateReducer(INITIAL_KEY_STATE, { type: 'press', code: 'ShiftLeft' })
+    s = keyStateReducer(s, { type: 'press', code: 'KeyA' })
+    expect(s.shiftAdvice).toBe('ShiftRight')
+  })
+
+  it('gibt keinen Rat bei richtiger Shift-Seite', () => {
+    let s = keyStateReducer(INITIAL_KEY_STATE, { type: 'press', code: 'ShiftRight' })
+    s = keyStateReducer(s, { type: 'press', code: 'KeyA' })
+    expect(s.shiftAdvice).toBeNull()
+  })
+
+  it('behält den Rat nach dem Loslassen und löscht ihn bei der nächsten Zeichentaste', () => {
+    let s = keyStateReducer(INITIAL_KEY_STATE, { type: 'press', code: 'ShiftRight' })
+    s = keyStateReducer(s, { type: 'press', code: 'KeyJ' })
+    expect(s.shiftAdvice).toBe('ShiftLeft')
+    s = keyStateReducer(s, { type: 'release', code: 'KeyJ' })
+    s = keyStateReducer(s, { type: 'release', code: 'ShiftRight' })
+    expect(s.shiftAdvice).toBe('ShiftLeft')
+    s = keyStateReducer(s, { type: 'press', code: 'KeyK' })
+    expect(s.shiftAdvice).toBeNull()
+  })
 })

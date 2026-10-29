@@ -6,7 +6,7 @@ import { useKeyState } from './hooks/useKeyState'
 import { usePhysicalKeyboard } from './hooks/usePhysicalKeyboard'
 
 export default function App() {
-  const { pressed, active, press, release } = useKeyState()
+  const { pressed, active, shiftAdvice, press, release } = useKeyState()
   const hasKeyboard = usePhysicalKeyboard()
 
   return (
@@ -16,7 +16,7 @@ export default function App() {
         <p className="text-slate-600">10-Finger-Schreiben auf der deutschen Tastatur lernen</p>
       </header>
       {!hasKeyboard && <KeyboardNotice />}
-      <FingerHint code={active} />
+      <FingerHint code={active} shiftAdvice={shiftAdvice} />
       <Keyboard pressed={pressed} activeCode={active} onPress={press} onRelease={release} />
       <FingerLegend />
     </main>

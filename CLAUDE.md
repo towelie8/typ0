@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Projektstand
 
 typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Stand: M1–M2 fertig (Tastatur mit Fingerzonen, Highlight bei Tastendruck/Klick), M3–M5 offen.
+(Zielgruppe: absolute Anfänger). Stand: M1–M3 fertig (Tastatur mit Fingerzonen, Highlight bei Tastendruck/Klick, animierte Hände), M4–M5 offen.
 
 ## Befehle
 
@@ -26,11 +26,19 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
   `code` ist die physische US-Position, daher liefert `KeyY` ein „z“. ISO-Enter reicht über zwei Reihen
   (`keysInRow` liefert beide Ausschnitte). Abfragen über `keyByCode`/`keyByChar`, Grundstellung in `HOME_KEYS`.
 - `src/data/fingers.ts`: Name und Farben je Finger. `src/components/Keyboard.tsx` zeichnet das SVG nur
-  aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home` (von E2E-Tests genutzt).
+  aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home`, die Finger `data-digit`/`data-highlight`,
+  die Kuppe `data-tip` (von E2E-Tests genutzt).
 - Eingabe: `src/hooks/useKeyState.ts` hört window-weit auf keydown/keyup (über `code`, nicht `key`) und
   verwaltet den Zustand über den reinen Reducer `src/lib/keyState.ts` (`pressed` = gehalten,
   `active` = zuletzt gedrückt, bleibt für die Fingeranzeige stehen). Klicks auf die SVG-Tasten gehen
   über dieselben `press`/`release`-Funktionen. Strg/Meta-Kürzel werden nicht abgefangen, Tab bleibt frei.
+- Hände: `src/components/Hands.tsx` liegt als `<g>` im SVG der Tastatur (`pointer-events: none`).
+  Geometrie rein und getestet in `src/lib/hands.ts` (Tasteneinheiten): `Digit` teilt den Layout-`thumb`
+  in `l-thumb`/`r-thumb` (Leertaste = rechter Daumen). Ziel jedes Fingers ist die gehaltene Taste aus
+  `pressed` (`digitTargets`), sonst die Grundstellung; motion animiert einen Fortschrittswert über eine
+  Bézierkurve (`arcPoint`). Hervorgehoben wird der Finger von `active`. `useReducedMotion()` → keine Bewegung.
+- Shift-Regel: `strokesForChar` in `src/lib/strokes.ts` (Shift mit der Gegenhand); `shiftAdvice` im
+  Reducer meldet Shift auf der falschen Seite.
 - Texte über Finger: `FINGERS[f].name` (Nominativ) bzw. `.dative` („mit dem rechten Zeigefinger“).
 - Stolperstein: `'ß'.toUpperCase()` ist „SS“. Buchstabentasten erkennt man daran, dass `shiftChar`
   der Großbuchstabe von `char` ist (`isLetterKey` in `src/lib/keyName.ts`).

@@ -3,7 +3,13 @@ import { keyByCode } from '../data/layout'
 import { keyName } from '../lib/keyName'
 
 /** Zeigt für die zuletzt gedrückte Taste, welcher Finger zuständig ist. */
-export function FingerHint({ code }: { code: string | null }) {
+interface FingerHintProps {
+  code: string | null
+  /** Bessere Shift-Taste, falls Shift mit derselben Hand gedrückt wurde. */
+  shiftAdvice?: 'ShiftLeft' | 'ShiftRight' | null
+}
+
+export function FingerHint({ code, shiftAdvice = null }: FingerHintProps) {
   const key = code ? keyByCode(code) : undefined
   if (!key) {
     return (
@@ -22,6 +28,12 @@ export function FingerHint({ code }: { code: string | null }) {
         {keyName(key)}
       </kbd>
       drückst du mit dem <strong style={{ color: finger.stroke }}>{finger.dative}</strong>.
+      {shiftAdvice && (
+        <span className="mt-1 block text-base text-amber-700" data-testid="shift-advice">
+          Shift drückt die andere Hand: hier der {shiftAdvice === 'ShiftRight' ? 'rechte' : 'linke'} kleine Finger
+          auf der {shiftAdvice === 'ShiftRight' ? 'rechten' : 'linken'} Shift-Taste.
+        </span>
+      )}
     </p>
   )
 }

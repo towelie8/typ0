@@ -1,11 +1,14 @@
 import { FINGERS } from '../data/fingers'
 import { HOME_KEYS, ISO_ENTER_INSET, KEYBOARD_WIDTH, KEYS, ROW_COUNT, type KeyDef } from '../data/layout'
 import { isLetterKey, keyName } from '../lib/keyName'
+import { Hands } from './Hands'
 
 /** Pixel pro Tasteneinheit im SVG-Koordinatensystem. */
 const UNIT = 60
 const GAP = 4
 const RADIUS = 6
+/** Platz unter der Tastatur für die Handflächen, in Tasteneinheiten. */
+const PALM_SPACE = 1
 /** Farbwechsel beim Drücken; bei reduzierter Bewegung sofort. */
 const TRANSITION = 'transition-[fill,stroke-width] duration-100 motion-reduce:transition-none'
 
@@ -101,11 +104,11 @@ interface KeyboardProps {
   onRelease: (code: string) => void
 }
 
-/** Deutsche ISO-QWERTZ-Tastatur, Tasten nach Fingerzone eingefärbt. */
+/** Deutsche ISO-QWERTZ-Tastatur, Tasten nach Fingerzone eingefärbt, mit Händen darüber. */
 export function Keyboard({ pressed, activeCode, onPress, onRelease }: KeyboardProps) {
   return (
     <svg
-      viewBox={`0 0 ${KEYBOARD_WIDTH * UNIT} ${ROW_COUNT * UNIT}`}
+      viewBox={`0 0 ${KEYBOARD_WIDTH * UNIT} ${(ROW_COUNT + PALM_SPACE) * UNIT}`}
       className="h-auto w-full touch-none select-none"
       role="img"
       aria-label="Deutsche QWERTZ-Tastatur, Tasten nach Fingern eingefärbt"
@@ -120,6 +123,7 @@ export function Keyboard({ pressed, activeCode, onPress, onRelease }: KeyboardPr
           onRelease={onRelease}
         />
       ))}
+      <Hands pressed={pressed} activeCode={activeCode} unit={UNIT} />
     </svg>
   )
 }
