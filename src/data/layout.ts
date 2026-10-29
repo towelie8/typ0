@@ -50,7 +50,7 @@ const ROWS: RowSpec[][] = [
     ['Digit3', '3', '§', 'l-middle'],
     ['Digit4', '4', '$', 'l-index'],
     ['Digit5', '5', '%', 'l-index'],
-    // Die 6 liegt zwischen T und Z; Lehrbücher ordnen sie unterschiedlich zu.
+    // Die 6 liegt zwischen T und Z; festgelegt: linker Zeigefinger (Entscheidung 2026-10-29).
     ['Digit6', '6', '&', 'l-index'],
     ['Digit7', '7', '/', 'r-index'],
     ['Digit8', '8', '(', 'r-middle'],

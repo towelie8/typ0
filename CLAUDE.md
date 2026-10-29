@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Projektstand
 
 typ0 ist eine Web-App zum Erlernen des 10-Finger-Schreibens auf deutscher QWERTZ-Tastatur
-(Zielgruppe: absolute Anfänger). Stand: M1 fertig (statische Tastatur mit Fingerzonen), M2–M5 offen.
+(Zielgruppe: absolute Anfänger). Stand: M1–M2 fertig (Tastatur mit Fingerzonen, Highlight bei Tastendruck/Klick), M3–M5 offen.
 
 ## Befehle
 
@@ -27,8 +27,15 @@ Playwright-Browser fehlen nach einem Update → `npx playwright install chromium
   (`keysInRow` liefert beide Ausschnitte). Abfragen über `keyByCode`/`keyByChar`, Grundstellung in `HOME_KEYS`.
 - `src/data/fingers.ts`: Name und Farben je Finger. `src/components/Keyboard.tsx` zeichnet das SVG nur
   aus diesen Daten; die Tasten tragen `data-code`/`data-finger`/`data-home` (von E2E-Tests genutzt).
+- Eingabe: `src/hooks/useKeyState.ts` hört window-weit auf keydown/keyup (über `code`, nicht `key`) und
+  verwaltet den Zustand über den reinen Reducer `src/lib/keyState.ts` (`pressed` = gehalten,
+  `active` = zuletzt gedrückt, bleibt für die Fingeranzeige stehen). Klicks auf die SVG-Tasten gehen
+  über dieselben `press`/`release`-Funktionen. Strg/Meta-Kürzel werden nicht abgefangen, Tab bleibt frei.
+- Texte über Finger: `FINGERS[f].name` (Nominativ) bzw. `.dative` („mit dem rechten Zeigefinger“).
 - Stolperstein: `'ß'.toUpperCase()` ist „SS“. Buchstabentasten erkennt man daran, dass `shiftChar`
-  der Großbuchstabe von `char` ist (`isLetterKey`).
+  der Großbuchstabe von `char` ist (`isLetterKey` in `src/lib/keyName.ts`).
+- E2E: Die keydown-Listener hängen erst nach dem ersten Effekt; vor Tastendrücken direkt nach
+  `goto()` `waitForKeyListener(page)` aus `e2e/helpers.ts` aufrufen.
 
 ## Session-Ablauf (`mabe/`)
 

@@ -41,6 +41,7 @@ Diese Entscheidungen nicht neu verhandeln. Änderungen nur nach Rücksprache mit
 - Grundstellung: A/S/D/F (links) und J/K/L/Ö (rechts), Daumen auf der Leertaste.
 - Ä, Ö, Ü, ß sowie die übrigen Tasten rechts außen drückt der rechte kleine Finger.
 - Shift wird mit der Hand gegenüber der Zeichentaste gedrückt.
+- Die Ziffer 6 drückt der linke Zeigefinger.
 - Lernpfad: 1 Grundreihe + Leertaste → 2 obere Reihe → 3 untere Reihe → 4 Shift + Satzzeichen
   → 5 (optional) Zahlen/Sonderzeichen. Übungstexte enthalten nur bereits gelernte Tasten.
 - Die nächste Lektion wird ab ≥ 95 % Genauigkeit freigeschaltet.

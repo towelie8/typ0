@@ -36,7 +36,7 @@ describe('QWERTZ-Layout', () => {
     ['a', 'l-pinky'], ['q', 'l-pinky'], ['y', 'l-pinky'], ['<', 'l-pinky'],
     ['s', 'l-ring'], ['w', 'l-ring'], ['x', 'l-ring'],
     ['d', 'l-middle'], ['e', 'l-middle'], ['c', 'l-middle'],
-    ['f', 'l-index'], ['g', 'l-index'], ['r', 'l-index'], ['t', 'l-index'], ['v', 'l-index'], ['b', 'l-index'],
+    ['f', 'l-index'], ['g', 'l-index'], ['6', 'l-index'], ['7', 'r-index'], ['r', 'l-index'], ['t', 'l-index'], ['v', 'l-index'], ['b', 'l-index'],
     ['j', 'r-index'], ['h', 'r-index'], ['z', 'r-index'], ['u', 'r-index'], ['n', 'r-index'], ['m', 'r-index'],
     ['k', 'r-middle'], ['i', 'r-middle'], [',', 'r-middle'],
     ['l', 'r-ring'], ['o', 'r-ring'], ['.', 'r-ring'],

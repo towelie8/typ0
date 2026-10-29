@@ -18,7 +18,7 @@ Neues Todo → auch Issue anlegen; erledigt → hier abhaken und Issue schließe
 - [x] Claude soll mit User zusammen im Plan Modus ein Session Prompt erstellen, welches dann immer gelesen werden soll vor jeder Session nachdem TechStack und alle offenen Fragen aus dem project prompt geklärt sind.
 - [x] Issues und Todos in GitHub pflegen (Issues #1–#7 angelegt)
 - [x] #1 M1: Projekt-Setup (Vite, TS, Tailwind v4, Vitest, Playwright) + statische QWERTZ-Tastatur mit Fingerzonen
-- [ ] #2 M2: Interaktion – Highlight bei Tastendruck/Klick, Fingerangabe
+- [x] #2 M2: Interaktion – Highlight bei Tastendruck/Klick, Fingerangabe
 - [ ] #3 M3: Hand-Animation mit motion/react inkl. reduced motion
 - [ ] #4 M4: Lernpfad – Lektionsdaten, Textgenerator, Trainer, Freischaltung ≥ 95 %, ProgressStore
 - [ ] #5 M5: README (Start, neue Lektionen, Deployment nginx/Caddy) + Endabnahme, Befehle in CLAUDE.md nachtragen
