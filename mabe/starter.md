@@ -25,6 +25,8 @@ Neues Todo → auch Issue anlegen; erledigt → hier abhaken und Issue schließe
 - [ ] #6 Domain besorgen, Deployment auf VServer
   - [x] Domain typ0.dev gekauft
   - [x] nginx-Konfiguration aktiv, App unter `/var/www/typ0.dev` hochgeladen (`deploy/deploy.sh`)
-  - [ ] Registrierung bei der .dev-Registry abwarten (RDAP noch 404), DNS-Einträge setzen
+  - [ ] Registrierung klären: Stand 2026-11-01 kennt die .dev-Registry typ0.dev weiterhin nicht (RDAP 404, keine NS),
+        3 Tage nach dem Kauf → beim Registrar Bestellstatus, Zahlung, Bestätigungs-Mail und Schreibweise `typ0` (Null) prüfen
+  - [ ] DNS-Einträge setzen (Tabelle im Session-Log 2026-10-29)
   - [ ] Zertifikat per `certbot --nginx -d typ0.dev -d www.typ0.dev`, https://typ0.dev prüfen, Issue schließen
 - [ ] #7 Später: Konten/Server-Backend für Fortschritt (ProgressStore-Implementierung)
